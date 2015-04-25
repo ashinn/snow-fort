@@ -11,8 +11,8 @@
 
 ;; allow 1 day to confirm
 (define (live-request? file)
-  (< (+ (file-modification-time file) (* 60 60 24))
-     (current-seconds)))
+  (<= (current-seconds)
+      (+ (file-modification-time file) (* 60 60 24))))
 
 (define (invalid-public-key-reason key)
   (let ((fail
@@ -126,6 +126,8 @@
              ((not (equal? expected-key conf-key))
               `(span "Invalid confirmation key: " ,email))
              ((not (live-request? reg-file))
+              (log-warn `(> ,(current-seconds)
+                            (+ ,(file-modification-time reg-file) 1 day)))
               `(span "Request expired, please register again."))
              (else
               (delete-file reg-file)
