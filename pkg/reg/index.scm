@@ -97,7 +97,8 @@
             (send-mail 'From: "snow@snow-fort.org"
                        'To: email
                        'Subject: "snow-fort.org confirmation"
-                       'Body: (make-confirmation-mail cfg key email conf-key))
+                       'Body: (make-confirmation-mail cfg key email conf-key)
+                       'Host: #f)
             (call-with-output-file reg-file
               (lambda (out) (write conf-key out)))
             `(span "Thank you for registering " ,email ". "
