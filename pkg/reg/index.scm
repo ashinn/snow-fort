@@ -94,12 +94,12 @@
             `(span "Thank you for registering " ,email ". "
                    "You can now upload packages with this account."))
            (else
-            (call-with-output-file reg-file
-              (lambda (out) (write conf-key out)))
             (send-mail 'From: "snow@snow-fort.org"
                        'To: email
                        'Subject: "snow-fort.org confirmation"
                        'Body: (make-confirmation-mail cfg key email conf-key))
+            (call-with-output-file reg-file
+              (lambda (out) (write conf-key out)))
             `(span "Thank you for registering " ,email ". "
                    "A confirmation mail has been sent to this address. "
                    ))))))))))
