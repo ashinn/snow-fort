@@ -83,7 +83,7 @@
             `(span "Thanks for uploading! "
                    "Users can now install your package.")))))))))
 
-'(servlet-run
+(servlet-run
  (lambda (cfg request next restart)
    (servlet-parse-body! request)
    (respond
