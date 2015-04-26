@@ -36,7 +36,7 @@
        ((and (not password-given?) (not signed?))
         (fail "neither password nor signature given for upload"))
        ((and password-given?
-             (not (equal? password) (get-user-password cfg email)))
+             (not (equal? password (get-user-password cfg email))))
         (fail "invalid password"))
        ((and signed?
              (invalid-signature-reason cfg sig-spec snowball))
