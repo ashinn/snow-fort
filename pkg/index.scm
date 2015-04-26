@@ -16,8 +16,9 @@
   (let* ((email (package-email pkg))
          (desc (or (assoc-get pkg 'description) ""))
          (dir (package-dir email pkg))
-         (doc (assoc-get pkg 'manual))
-         (doc-url (if (and doc
+         (docs (assoc-get pkg 'manual))
+         (doc (if (pair? docs) (car docs) docs))
+         (doc-url (if (and (string? doc)
                            (or (string-prefix? doc "http:")
                                (string-prefix? doc "https:")))
                       doc
