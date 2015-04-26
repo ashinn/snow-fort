@@ -29,12 +29,15 @@
       (fail "key email must be a string"))
      ((not (string? (assoc-get key 'name)))
       (fail "key name must be a string"))
+     ((not (string? (assoc-get key 'password)))
+      (fail "key requires a password"))
      (else
       (let ((ls (assoc-get key 'public-key eq?))
             (priv (assoc-get key 'private-key eq?)))
         (cond
          ((not (or ls priv))
-          (fail "key requires a public-key or private-key"))
+          ;;(fail "key requires a public-key or private-key")
+          #f)
          (priv
           #f)
          ((not (valid-integer? (assoc-get ls 'modulus eq?)))
