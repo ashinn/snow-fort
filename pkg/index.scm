@@ -70,8 +70,15 @@
                 `(table
                   (tr (th "Package") (th "Version") (th "Description")
                       (th "Authors") (th "Docs"))
-                  ,@(map
-                     (lambda (pkg) (package-row cfg repo pkg))
+                  ,@(filter-map
+                     (lambda (pkg)
+                       (guard
+                           (exn
+                            (else
+                             (log-error "couldn't generate package summary: "
+                                        exn)
+                             #f))
+                         (package-row cfg repo pkg)))
                      (sort (filter package? (cdr repo))
                            (lambda (a b)
                              (string<? (write-to-string (package-name a))

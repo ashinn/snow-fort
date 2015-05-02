@@ -81,7 +81,8 @@
                        (write-bytevector bv out)
                        (close-output-port out))))))
             `(span "Thanks for uploading! "
-                   "Users can now install your package.")))))))))
+                   "Users can now install "
+                   ,(package-name pkg2))))))))))
 
 (servlet-run
  (lambda (cfg request next restart)
