@@ -27,6 +27,7 @@
            (email (and (pair? sig-spec) (assoc-get (cdr sig-spec) 'email)))
            (password (request-param request "pw"))
            (password-given? (and password (not (equal? password ""))))
+           (user-password (and email (get-user-password cfg email)))
            (signed? (and (pair? sig-spec) (assoc-get (cdr sig-spec) 'rsa))))
       (cond
        ((invalid-package-reason pkg)
@@ -35,8 +36,9 @@
         (fail "a sig with at least email is required"))
        ((and (not password-given?) (not signed?))
         (fail "neither password nor signature given for upload"))
-       ((and password-given?
-             (not (equal? password (get-user-password cfg email))))
+       ((not user-password)
+        (fail "unknown user: " email " - did you forget to run reg-key?"))
+       ((and password-given? (not (equal? password user-password)))
         (fail "invalid password"))
        ((and signed?
              (invalid-signature-reason cfg sig-spec snowball))
