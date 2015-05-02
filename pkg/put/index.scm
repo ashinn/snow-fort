@@ -84,7 +84,8 @@
                        (close-output-port out))))))
             `(span "Thanks for uploading! "
                    "Users can now install "
-                   ,(package-name pkg2))))))))))
+                   ,(call-with-output-string
+                      (lambda (out) (write (package-name pkg2) out))))))))))))
 
 (servlet-run
  (lambda (cfg request next restart)
