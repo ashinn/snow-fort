@@ -1,7 +1,8 @@
 
-(import (scheme base) (scheme write) (srfi 1) (srfi 95)
-        (chibi log) (chibi net servlet) (chibi config) (chibi pathname)
-        (chibi string) (chibi regexp) (chibi snow fort) (chibi snow package))
+(import (scheme base) (scheme read) (scheme write) (srfi 1) (srfi 95)
+        (chibi log) (chibi net servlet) (chibi config) (chibi memoize)
+        (chibi pathname) (chibi string) (chibi regexp) (chibi io)
+        (chibi snow fort) (chibi snow package))
 
 ;; Add a table id, and a sort button to each header to call a sorter
 ;; function on the table.
@@ -52,6 +53,28 @@
     (write x out)
     (get-output-string out)))
 
+(define repo->sxml-table
+  (memoize-file-loader
+   (lambda (repo-path cfg)
+     (let ((repo (call-with-input-file repo-path read)))
+       (sortable-table
+        `(table
+          (tr (th "Package") (th "Version") (th "Description")
+              (th "Authors") (th "Docs"))
+          ,@(filter-map
+             (lambda (pkg)
+               (guard
+                   (exn
+                    (else
+                     (log-error "couldn't generate package summary: "
+                                exn)
+                     #f))
+                 (package-row cfg repo pkg)))
+             (sort (filter package? (cdr repo))
+                   (lambda (a b)
+                     (string<? (write-to-string (package-name a))
+                               (write-to-string (package-name b))))))))))))
+
 (servlet-run
  (lambda (cfg request next restart)
    (respond
@@ -65,22 +88,5 @@
           (div
            (@ (id . "col1"))
            ,(content
-             (let ((repo (current-repo cfg)))
-               (sortable-table
-                `(table
-                  (tr (th "Package") (th "Version") (th "Description")
-                      (th "Authors") (th "Docs"))
-                  ,@(filter-map
-                     (lambda (pkg)
-                       (guard
-                           (exn
-                            (else
-                             (log-error "couldn't generate package summary: "
-                                        exn)
-                             #f))
-                         (package-row cfg repo pkg)))
-                     (sort (filter package? (cdr repo))
-                           (lambda (a b)
-                             (string<? (write-to-string (package-name a))
-                                       (write-to-string (package-name b))))
-                           ))))))))))))))
+             (repo->sxml-table (static-local-path cfg "repo.scm")
+                               cfg))))))))))
