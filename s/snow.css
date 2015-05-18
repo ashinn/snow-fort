@@ -2,7 +2,7 @@ body {
   margin: auto; 
   padding: 0;
   margin-bottom: 3em;
-  font-family: Arial, Verdana, sans-serif;
+  font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
   max-width: 70em;
 }
 #head {overflow: hidden}
@@ -70,6 +70,16 @@ body {
           flex: 1;
 }
 #col1_2 {
+  padding: 1em;
+  -webkit-flex: 2;
+          flex: 2;
+}
+#col2_3 {
+  padding: 1em;
+  -webkit-flex: 3;
+          flex: 3;
+}
+#col3_2 {
   padding: 1em;
   -webkit-flex: 2;
           flex: 2;

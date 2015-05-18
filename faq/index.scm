@@ -32,7 +32,7 @@
               " should be able to use these libraries. "
               (a (@ (href . "http://synthcode.com/wiki/chibi-scheme"))
                  "Chibi-scheme")
-              " as of version 0.7 comes with a command " (code "snow")
+              " as of version 0.7.3 comes with a command " (code "snow-chibi")
               " which can automatically search and install R7RS libraries "
               "for itself and other implementations.")
           (div

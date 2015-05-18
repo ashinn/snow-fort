@@ -28,11 +28,12 @@ snow to it and it still looks like a ball of snow."))
            )
           (div
            (@ (id . "col2"))
-           (h3 "Coming Soon")
-           (ul
-            (li "Client tools for accessing this repository")
-            (li "R7RS in the browser")
-            (li "More libraries!")))
+           (br)
+           (p
+            "Browse the " (a (@ (href . "/pkg/")) "packages") " or try "
+            (a (@ (href . "http://chibi-scheme.appspot.com/"))
+               "chibi-scheme in the browser")
+            "!"))
           (div
            (@ (id . "col3"))
            ))))))))
