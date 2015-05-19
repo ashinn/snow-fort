@@ -38,6 +38,10 @@
                 (write (package-name pkg) out)
                 (get-output-string out))))
       (td ,(package-version pkg))
+      (td ,(cond
+            ((assoc-get (cdr pkg) 'updated)
+             => (lambda (s) (substring s 0 10)))
+            (else "")))
       (td (@ (class . "detail")) ,desc)
       (td (a (@ (href . ,(string-append "mailto:" (or auth-email ""))))
              ,auth)
@@ -59,8 +63,9 @@
      (let ((repo (call-with-input-file repo-path read)))
        (sortable-table
         `(table
-          (tr (th "Package") (th "Version") (th "Description")
-              (th "Authors") (th "Docs"))
+          (@ (class . "packages"))
+          (tr (th "Package") (th "Version") (th "Updated")
+              (th "Description") (th "Authors") (th "Docs"))
           ,@(filter-map
              (lambda (pkg)
                (guard
