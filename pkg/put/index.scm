@@ -1,8 +1,8 @@
 
-(import (scheme base) (scheme write) (scheme file) (srfi 1)
+(import (scheme base) (scheme write) (scheme file) (scheme time) (srfi 1)
         (chibi config) (chibi pathname) (chibi regexp) (chibi zlib)
         (chibi string) (chibi log) (chibi net servlet) (chibi io)
-        (chibi filesystem) (chibi tar) (chibi crypto rsa)
+        (chibi filesystem) (chibi tar) (chibi time) (chibi crypto rsa)
         (chibi snow fort) (chibi snow package) (chibi snow utils))
 
 (define (path-top path)
@@ -10,6 +10,21 @@
 
 (define (tar-top tar)
   (path-top (car (tar-files tar))))
+
+;; 2011-08-03T22:44:00+00:00"
+(define (tai->rfc-3339 seconds)
+  (define (pad2 n)
+    (if (< n 10)
+        (string-append "0" (number->string n))
+        (number->string n)))
+  (let ((tm (seconds->time (exact (round seconds)))))
+    (string-append
+     (number->string (+ 1900 (time-year tm))) "-"
+     (pad2 (time-month tm)) "-"
+     (pad2 (time-day tm)) "T"
+     (pad2 (time-hour tm)) ":"
+     (pad2 (time-minute tm)) ":"
+     (pad2 (time-second tm)) "+00:00")))
 
 (define (handle-upload cfg request up)
   (guard (exn
@@ -53,14 +68,18 @@
                (local-path (static-local-path cfg path))
                (local-dir (path-directory local-path))
                (url (static-url cfg path))
+               (now (tai->rfc-3339 (current-second)))
                (pkg2
                 `(,(car pkg)
                   (url ,url)
                   (size ,(bytevector-length snowball))
+                  (updated ,now)
+                  (created ,now)
                   ,sig-spec
                   ,@(remove
                      (lambda (x)
-                       (and (pair? x) (memq (car x) '(url size))))
+                       (and (pair? x)
+                            (memq (car x) '(url size updated created))))
                      (cdr pkg)))))
           (cond
            ((file-exists? local-dir)
@@ -69,7 +88,16 @@
            (else
             (create-directory* (path-directory local-path))
             (upload-save up local-path)
-            (update-repo-package cfg pkg2)
+            (update-repo-package
+             cfg pkg2 (lambda (repo drop pkg2)
+                        (let ((orig-created
+                               (and (pair? drop)
+                                    (pair? (car drop))
+                                    (assq 'created (cdar drop))))
+                              (cell (assq 'created (cdr pkg2))))
+                          (if (and orig-created cell)
+                              (set-car! (cdr cell) (cadr orig-created))))
+                        pkg2))
             (guard (exn (else (log-error "failed to save docs: " exn)))
               (cond
                ((cond ((assoc-get pkg 'manual)
