@@ -92,6 +92,6 @@ td,th {
 td.detail {
   white-space: normal;
 }
-table.packages td {
-  border-bottom: 1pt solid black;
+table.sortable td {
+  border-top: 1pt solid black;
 }

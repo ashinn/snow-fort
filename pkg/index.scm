@@ -63,7 +63,7 @@
      (let ((repo (call-with-input-file repo-path read)))
        (sortable-table
         `(table
-          (@ (class . "packages"))
+          (@ (class . "sortable"))
           (tr (th "Package") (th "Version") (th "Updated")
               (th "Description") (th "Authors") (th "Docs"))
           ,@(filter-map
@@ -94,4 +94,5 @@
            (@ (id . "col1"))
            ,(content
              (repo->sxml-table (static-local-path cfg "repo.scm")
-                               cfg))))))))))
+                               cfg)))))
+       '(script (@ (src . "/s/sorttable.js"))))))))
