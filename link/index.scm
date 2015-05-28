@@ -22,8 +22,11 @@
            (h3 "Implementations")
            (ul
             (li (a (@ (href . "http://synthcode.com/wiki/chibi-scheme")) "Chibi Scheme"))
-            (li (a (@ (href . "https://code.google.com/p/sagittarius-scheme/")) "Sagittarius Scheme"))
+            (li (a (@ (href . "http://call-cc.org/")) "CHICKEN Scheme"))
             (li (a (@ (href . "https://code.google.com/p/foment/")) "Foment Scheme"))
+            (li (a (@ (href . "http://www.gnu.org/software/kawa/")) "Kawa Scheme"))
+            (li (a (@ (href . "http://www.larcenists.org/")) "Larceny Scheme"))
+            (li (a (@ (href . "https://code.google.com/p/sagittarius-scheme/")) "Sagittarius Scheme"))
             ))
           (div
            (@ (id . "col2"))
