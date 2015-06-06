@@ -35,7 +35,7 @@
            (blockquote
             (pre
              (code
-              "snow-chibi install --impls=gauche,larceny \\\n"
+              "snow-chibi --impls=gauche,larceny install \\\n"
               "  chibi-match-0.7.3.tgz")))
            (p
             "The following implementations are currently supported: "
