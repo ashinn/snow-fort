@@ -46,7 +46,7 @@
              (li (a (@ (href . "http://practical-scheme.net/gauche/")) "gauche"))
              (li (a (@ (href . "http://www.gnu.org/software/kawa/")) "kawa"))
              (li (a (@ (href . "http://www.larcenists.org/")) "larceny")))
-            " and the special name " (command "all") " can be used "
+            " and the special name " (code "all") " can be used "
             " to install for all available implementations.  You can "
             " check the available implementations on your machine "
             " with the " (code "snow-chibi implementations") " command.")
@@ -69,6 +69,17 @@
             "be given a choice as to which to install.  In most cases "
             "people will choose unique prefixes for their libraries, "
             "but you may find competing SRFI implementations.")
+           (p
+            "This will try to install in the standard system directory "
+            "for the given implementation, invoking " (code "sudo")
+            " if needed.  If you don't have " (code "sudo") " access "
+            "or otherwise want to install in a non-standard location "
+            "you can use the " (code "--install-prefix") " option. "
+            "For example, given " (code "--install-prefix=/usr/local/")
+            " show-chibi will try to install in "
+            "/usr/local/share/snow/<impl>/.  If you don't want to "
+            "assume a given layout, you can specify the exact directory "
+            "with the " (code "--install-library-dir") " option.")
            (p
             "To actually find the packages you want you can either browse "
             "the " (a (@ (href . "/pkg/")) "packages list") ", or you can "
