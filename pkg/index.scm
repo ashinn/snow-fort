@@ -4,6 +4,11 @@
         (chibi pathname) (chibi string) (chibi regexp) (chibi io)
         (chibi snow fort) (chibi snow package))
 
+(define (write-to-string x)
+  (let ((out (open-output-string)))
+    (write x out)
+    (get-output-string out)))
+
 ;; Add a table id, and a sort button to each header to call a sorter
 ;; function on the table.
 (define (sortable-table table)
@@ -34,9 +39,7 @@
                          email)))
     `(tr
       (td (a (@ (href . ,(assoc-get pkg 'url)))
-             ,(let ((out (open-output-string)))
-                (write (package-name pkg) out)
-                (get-output-string out))))
+             ,(write-to-string (package-name))))
       (td ,(package-version pkg))
       (td ,(cond
             ((assoc-get (cdr pkg) 'updated)
@@ -51,11 +54,6 @@
                          ,maint) ")")
                 '()))
       (td (a (@ (href . ,doc-url)) "[html]")))))
-
-(define (write-to-string x)
-  (let ((out (open-output-string)))
-    (write x out)
-    (get-output-string out)))
 
 (define repo->sxml-table
   (memoize-file-loader

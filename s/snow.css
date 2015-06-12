@@ -95,3 +95,7 @@ td.detail {
 table.sortable td {
   border-top: 1pt solid black;
 }
+li {
+  line-height: 0.7em;
+  padding-bottom: 1em;
+}
