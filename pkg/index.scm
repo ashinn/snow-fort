@@ -39,7 +39,7 @@
                          email)))
     `(tr
       (td (a (@ (href . ,(assoc-get pkg 'url)))
-             ,(write-to-string (package-name))))
+             ,(write-to-string (package-name pkg))))
       (td ,(package-version pkg))
       (td ,(cond
             ((assoc-get (cdr pkg) 'updated)
