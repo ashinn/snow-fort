@@ -1,5 +1,6 @@
 
-(import (scheme base) (scheme write) (scheme file) (scheme time) (srfi 1)
+(import (scheme base) (scheme read) (scheme write) (scheme file) (scheme time)
+        (srfi 1)
         (chibi config) (chibi pathname) (chibi regexp) (chibi zlib)
         (chibi string) (chibi log) (chibi net servlet) (chibi io)
         (chibi filesystem) (chibi tar) (chibi time) (chibi crypto rsa)
