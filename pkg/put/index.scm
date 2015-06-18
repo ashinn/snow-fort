@@ -100,11 +100,14 @@
                         pkg2))
             (guard (exn (else (log-error "failed to save docs: " exn)))
               (cond
-               ((cond ((assoc-get pkg 'manual)
-                       => (lambda (doc-file)
-                            (let ((file (make-path (tar-top snowball)
-                                                   doc-file)))
-                              (tar-extract-file snowball file))))
+               ;; TODO: support multiple doc files
+               ((cond ((assq 'manual (cdr pkg))
+                       => (lambda (ls)
+                            (and (pair? ls)
+                                 (pair? (cdr ls))
+                                 (let ((file (make-path (tar-top snowball)
+                                                        (cadr ls))))
+                                   (tar-extract-file snowball file)))))
                       (else #f))
                 => (lambda (bv)
                      (let ((out (open-binary-output-file
