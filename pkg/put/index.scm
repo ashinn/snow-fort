@@ -37,7 +37,10 @@
     (let* ((raw-data (upload->bytevector up))
            (snowball (maybe-gunzip raw-data))
            (pkg (extract-snowball-package snowball))
-           (sig-spec (guard (exn (else #f))
+           (sig-spec (guard
+                         (exn
+                          (else
+                           (log-error "error parsing sig: " exn)))
                        (upload->sexp (request-upload request "sig"))))
            (email (and (pair? sig-spec) (assoc-get (cdr sig-spec) 'email)))
            (password (request-param request "pw"))
