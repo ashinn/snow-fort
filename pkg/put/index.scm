@@ -41,7 +41,11 @@
                          (exn
                           (else
                            (log-error "error parsing sig: " exn)))
-                       (upload->sexp (request-upload request "sig"))))
+                       (cond
+                        ((request-param request "sig")
+                         => (lambda (s) (read (open-input-string s))))
+                        ((request-upload request "sig") => upload->sexp)
+                        (else #f))))
            (email (and (pair? sig-spec) (assoc-get (cdr sig-spec) 'email)))
            (password (request-param request "pw"))
            (password-given? (and password (not (equal? password ""))))
