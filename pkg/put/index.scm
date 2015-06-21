@@ -21,7 +21,7 @@
   (let ((tm (seconds->time (exact (round seconds)))))
     (string-append
      (number->string (+ 1900 (time-year tm))) "-"
-     (pad2 (time-month tm)) "-"
+     (pad2 (+ 1 (time-month tm))) "-"
      (pad2 (time-day tm)) "T"
      (pad2 (time-hour tm)) ":"
      (pad2 (time-minute tm)) ":"
