@@ -1,6 +1,7 @@
 
 (import (scheme base) (scheme read) (scheme write) (scheme file) (scheme time)
         (srfi 1)
+        (only (chibi) print-stack-trace)
         (chibi config) (chibi pathname) (chibi regexp) (chibi zlib)
         (chibi string) (chibi log) (chibi net servlet) (chibi io)
         (chibi filesystem) (chibi tar) (chibi time) (chibi crypto rsa)
@@ -31,6 +32,7 @@
   (guard (exn
           (else
            (log-error "upload error: " exn)
+           (print-stack-trace)
            (fail "unknown error processing snowball: "
                  "the file should be a gzipped tar file "
                  "containing a single directory with a "
@@ -41,11 +43,12 @@
            (sig-spec (guard
                          (exn
                           (else
-                           (log-error "error parsing sig: " exn)))
+                           (log-error "error parsing sig: " exn)
+                           #f))
                        (cond
+                        ((request-upload request "sig") => upload->sexp)
                         ((request-param request "sig")
                          => (lambda (s) (read (open-input-string s))))
-                        ((request-upload request "sig") => upload->sexp)
                         (else #f))))
            (email (and (pair? sig-spec) (assoc-get (cdr sig-spec) 'email)))
            (password (request-param request "pw"))
@@ -55,7 +58,7 @@
       (cond
        ((invalid-package-reason pkg)
         => fail)
-       ((not sig-spec)
+       ((not (pair? sig-spec))
         (fail "a sig with at least email is required"))
        ((and (not password-given?) (not signed?))
         (fail "neither password nor signature given for upload"))
