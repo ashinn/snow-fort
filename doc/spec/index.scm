@@ -39,6 +39,33 @@
   ;; If the package name is not provided, then the package can only be
   ;; referred to by the individual library names in the package.
   (name (wonderland))
+  ;; A list of author names, optionally with email addresses.
+  (authors \"Charles Dodgson\")
+  ;; A list of maintainers if different from the authors.
+  (maintainers \"Alice Caroll <alice@wonderland.org>\")
+  ;; A URL pointing to the manual for the package.
+  (manual \"manual.html\")
+  ;; A short description of the package.
+  (description \"...\")
+  ;; A list of licenses as symbols, e.g.
+  ;;  * gpl2
+  ;;  * gpl3
+  ;;  * lgpl
+  ;;  * mit
+  ;;  * bsd
+  ;;  * artistic
+  ;;  * apache
+  ;;  * public-domain
+  (license 'bsd)
+  ;; Current version string.
+  (version \"1.2.3\")
+  ;; Program containing tests to run before installing this package.
+  ;; The program should exit with a success value (0 on POSIX systems)
+  ;; if all tests pass.  On failure it should either exit otherwise,
+  ;; or output either \"ERROR\" or \"FAIL\".  Tools should fail or warn
+  ;; before installing libraries for which any tests fail.
+  (test \"path/to/test-program.scm\")
+
   ;; The URL points to a tarred, gzipped file containing a single
   ;; directory - any other format is invalid.  Only available from
   ;; repository info.
@@ -80,33 +107,7 @@
    ;; of final, build or test.  The default is just install.  If used by other
    ;; phases, this library will be installed in a temporary location for use
    ;; during the given phase.
-   (use-for final)
-   ;; Program containing tests to run before installing this library.
-   ;; The program should exit with a success value (0 on POSIX systems)
-   ;; if all tests pass.  On failure it should either exit otherwise,
-   ;; or output either \"ERROR\" or \"FAIL\".  Tools should fail or warn
-   ;; before installing libraries for which any tests fail.
-   (test \"path/to/test-program.scm\")
-   ;; A list of author names, optionally with email addresses.
-   (authors \"Charles Dodgson\")
-   ;; A list of maintainers if different from the authors.
-   (maintainers \"Alice Caroll <alice@wonderland.org>\")
-   ;; A URL pointing to the manual for the library.
-   (manual \"manual.html\")
-   ;; A short description of the library.
-   (description \"...\")
-   ;; A license as a symbol, e.g.
-   ;;  * gpl2
-   ;;  * gpl3
-   ;;  * lgpl
-   ;;  * mit
-   ;;  * bsd
-   ;;  * artistic
-   ;;  * apache
-   ;;  * public-domain
-   (licenses 'bsd)
-   ;; Current version string.
-   (version \"1.2.3\"))
+   (use-for final))
 
   ;; A program has all the same fields as a library, except the name
   ;; is optional, and the path indicates a file containing a single
