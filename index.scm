@@ -75,6 +75,8 @@ snow to it and it still looks like a ball of snow."))
            (p "Snow is a place to share Scheme programs, libraries and data. "
               "Currently we host only R7RS libraries, though we may expand "
               "to more dialects in the future.")
+           (p "Snow packages are also mirrored on "
+              (a (@ (href . "https://akkuscm.org/")) "Akku") ".")
            )
           (div
            (@ (id . "col2"))
