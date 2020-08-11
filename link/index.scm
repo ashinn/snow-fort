@@ -17,7 +17,7 @@
            (@ (id . "col1"))
            (h3 "R7RS")
            (ul
-            (li (a (@ (href . "http://trac.sacrideo.us/wg/raw-attachment/wiki/WikiStart/r7rs.pdf")) "Final draft"))
+            (li (a (@ (href . "https://small.r7rs.org/attachment/r7rs.pdf")) "Final draft"))
             (li (a (@ (href . "http://scheme-reports.org/")) "Scheme Reports")))
            (h3 "Implementations")
            (ul
