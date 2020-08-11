@@ -64,7 +64,7 @@
            (@ (id . "col3_2"))   ;; notes
            (p
             (sup "[1]") "The original "
-            (a (@ (href . "http://snow.iro.umontreal.ca/")) "Snow")
+            (a (@ (href . "https://web.archive.org/web/20190404011409/http://snow.iro.umontreal.ca/?tab=Home")) "Snow")
             " was designed around R4RS Scheme, whereas the new version "
             "is based on R7RS Scheme, which has its own library system. "
             "We sometimes just say \"Snow\" when referring to the new "
