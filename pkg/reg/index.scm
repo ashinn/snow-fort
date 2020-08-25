@@ -56,7 +56,7 @@
    "public Scheme repository, click the following link:\n"
    (make-confirmation-link cfg key email conf-key) "\n\n"
    "If you have not requested registration of this address, contact "
-   "snow@snow-fort.org.\n\n"
+   "alexshinn@gmail.com.\n\n"
    "Thanks,\n"
    "The Snow Admins\n"))
 
@@ -97,7 +97,7 @@
             `(span "Thank you for registering " ,email ". "
                    "You can now upload packages with this account."))
            (else
-            (send-mail 'From: "snow@snow-fort.org"
+            (send-mail 'From: "alexshinn@gmail.com"
                        'To: email
                        'Subject: "snow-fort.org confirmation"
                        'Body: (make-confirmation-mail cfg key email conf-key)

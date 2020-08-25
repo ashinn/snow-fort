@@ -3,17 +3,20 @@ body {
   padding: 0;
   margin-bottom: 3em;
   font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
+  /* font-size: calc((.05em + 1vmin) + (.05em + 1vmax)); */
+  font-size: large;
   max-width: 70em;
 }
 #head {overflow: hidden}
 #head_pic {
   float: left;
-  font-size: 3em;
+  font-size: 2em;
 }
 #head_name {
   float: right;
-  padding-top: 10px;
-  font-size: 2.5em;
+  padding-top: 0.5em;
+  padding-right: 1em;
+  font-size: 1.5em;
   text-shadow: 0px 5px 9px #aaa;
 }
 #toolbar {
@@ -25,7 +28,6 @@ body {
 }
 #menu {float: left}
 #menu a {
-  font-size: 1.2em;
   text-shadow: 0px 5px 9px #00a;
   padding: 10px;
   display: inline-block;
@@ -50,6 +52,25 @@ body {
 #quote p + p {
   margin-top: 0em;
 }
+#col1 {
+  padding: 1em;
+}
+#col2 {
+  padding: 1em;
+}
+#col3 {
+  padding: 1em;
+}
+#col1_2 {
+  padding: 1em;
+}
+#col2_3 {
+  padding: 1em;
+}
+#col3_2 {
+  padding: 1em;
+}
+@media only screen and (min-width: 1000px) {
 #main {
   display: -webkit-flex;
   display: flex;
@@ -84,6 +105,7 @@ body {
   -webkit-flex: 2;
           flex: 2;
 }
+}
 td,th {
   padding-right: 2em;
   padding-bottom: 0.5em;
@@ -96,6 +118,6 @@ table.sortable td {
   border-top: 1pt solid black;
 }
 li {
-  line-height: 0.7em;
+  line-height: 1em;
   padding-bottom: 1em;
 }
