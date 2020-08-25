@@ -53,7 +53,7 @@
       (td (@ (class . "detail"))
           ,@(map
              (lambda (auth email)
-               `(a (@ (href . ,(string-append "mailto:" (or auth-email ""))))
+               `(a (@ (href . ,(string-append "mailto:" (or email ""))))
                    ,auth))
              (if (pair? auth) auth (list auth))
              (append (if (pair? auth-email) auth-email (list auth-email))
