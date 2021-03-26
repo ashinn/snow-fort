@@ -49,10 +49,11 @@
              => (lambda (s) (substring s 0 10)))
             (else "")))
       (td (@ (class . "detail")) ,desc)
-      (td ,@(map
+      (td ,@(append-map
              (lambda (auth email)
-               `(a (@ (href . ,(string-append "mailto:" (or auth-email ""))))
-                   ,auth))
+               `((a (@ (href . ,(string-append "mailto:" (or auth-email ""))))
+                    ,auth)
+                 " "))
              (if (pair? auth) auth (list auth))
              (append (if (pair? auth-email) auth-email (list auth-email))
                      (map (lambda (i) #f)
