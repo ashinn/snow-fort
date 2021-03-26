@@ -24,11 +24,13 @@
          (dir (package-dir email pkg))
          (docs (assoc-get pkg 'manual))
          (doc (if (pair? docs) (car docs) docs))
-         (doc-url (if (and (string? doc)
-                           (or (string-prefix? doc "http:")
-                               (string-prefix? doc "https:")))
-                      doc
-                      (make-path (static-url cfg dir) "index.html")))
+         (doc-url (cond
+                   ((not (string? doc)) #f)
+                   ((or (string-prefix? doc "http:")
+                        (string-prefix? doc "https:"))
+                    doc)
+                   (else
+                    (make-path (static-url cfg dir) "index.html"))))
          (auth (package-author repo pkg))
          (maint (package-maintainer repo pkg))
          (auth-email (if (and maint (not (equal? auth maint)))
@@ -65,7 +67,7 @@
                   "(" (a (@ (href . ,(string-append "mailto:" (or email ""))))
                          ,maint) ")")
                 '()))
-      (td (a (@ (href . ,doc-url)) "[html]")))))
+      (td (a (@ (href . ,(or doc-url ""))) ,(if doc-url "[html]" ""))))))
 
 (define repo->sxml-table
   (memoize-file-loader
