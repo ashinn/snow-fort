@@ -36,22 +36,24 @@
                           ((assoc-get (cdr pkg) 'authors)
                            => (lambda (x)
                                 (if (pair? x)
-                                    (map extract-email x)
+                                    (extract-email (car x))
                                     (extract-email x))))
                           (else #f))
                          email)))
     `(tr
       (td (a (@ (href . ,(assoc-get pkg 'url)))
              ,(write-to-string (package-name pkg))))
-      (td ,(package-version pkg))
-      (td ,(cond
-            ((assoc-get (cdr pkg) 'updated)
-             => (lambda (s) (substring s 0 10)))
-            (else "")))
+      (td (small ,(package-version pkg)))
+      (td (small
+           ,(cond
+             ((assoc-get (cdr pkg) 'updated)
+              => (lambda (s) (substring s 0 10)))
+             (else ""))))
       (td (@ (class . "detail")) ,desc)
-      (td ,@(append-map
+      (td (@ (class . "detail"))
+          ,@(append-map
              (lambda (auth email)
-               `((a (@ (href . ,(string-append "mailto:" (or auth-email ""))))
+               `((a (@ (href . ,(string-append "mailto:" (or email ""))))
                     ,auth)
                  " "))
              (if (pair? auth) auth (list auth))

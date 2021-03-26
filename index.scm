@@ -80,7 +80,6 @@ snow to it and it still looks like a ball of snow."))
            )
           (div
            (@ (id . "col2"))
-           (br)
            (p
             "Browse the " (a (@ (href . "/pkg/")) "packages") " or try "
             (a (@ (href . "http://chibi-scheme.appspot.com/"))
