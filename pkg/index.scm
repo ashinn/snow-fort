@@ -1,5 +1,5 @@
 
-(import (scheme base) (scheme read) (scheme write) (srfi 1) (srfi 95)
+(import (scheme base) (scheme read) (scheme write) (srfi 1) (srfi 2) (srfi 95)
         (chibi log) (chibi net servlet) (chibi config) (chibi memoize)
         (chibi pathname) (chibi string) (chibi regexp) (chibi io)
         (chibi snow fort) (chibi snow package))
@@ -15,8 +15,9 @@
   table)
 
 (define (extract-email str)
-  (string-trim
-   (regexp-replace '(: (* any) "<" ($ (* (~ (">")))) ">" (* any)) str 1)))
+  (and-let* ((re '(: (* any) "<" ($ (* (~ (">")))) ">" (* any)))
+             (match (regexp-matches re str)))
+    (string-trim (regexp-match-submatch match 1))))
 
 (define (package-row cfg repo pkg)
   (let* ((email (package-email pkg))
@@ -53,7 +54,9 @@
       (td (@ (class . "detail"))
           ,@(append-map
              (lambda (auth email)
-               `((a (@ (href . ,(string-append "mailto:" (or email ""))))
+               `((a (@ ,@(if email
+                             `((href ,(string-append "mailto:" email)))
+                             '()))
                     ,auth)
                  " "))
              (if (pair? auth) auth (list auth))
@@ -62,7 +65,9 @@
                           (iota (if (pair? auth) (length auth) 1)))))
           ,@(if (and maint (not (equal? auth maint)))
                 `((br)
-                  "(" (a (@ (href . ,(string-append "mailto:" (or email ""))))
+                  "(" (a (@ ,@(if email
+                                  `((href ,(string-append "mailto:" email)))
+                                  '()))
                          ,maint) ")")
                 '()))
       (td (a (@ (href . ,doc-url)) "[html]")))))
