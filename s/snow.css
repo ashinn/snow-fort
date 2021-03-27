@@ -111,6 +111,13 @@ td,th {
   padding-bottom: 0.5em;
   white-space: nowrap;
 }
+table.sortable th::after {
+  content: '\00a0\25b4\25be';
+}
+table.sortable th.sorttable_sorted::after,
+table.sortable th.sorttable_sorted_reverse::after {
+  content: initial;
+}
 td.detail {
   white-space: normal;
 }
