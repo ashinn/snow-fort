@@ -32,10 +32,11 @@
       (small
        ,(cond
          ((assoc-get (cdr pkg) 'updated)
-          => (lambda (s) (substring s 0 10)))
+          => (lambda (s)
+               `(time (@ (class "relative") (datetime ,s))
+                      ,(substring s 0 10))))
          (else ""))))))
 
-;; TODO: display relative time (e.g. "2 hours ago")
 ;; to work with memoization we need to render via javascript
 (define repo->recent-summary
   (memoize-file-loader
@@ -89,5 +90,5 @@ snow to it and it still looks like a ball of snow."))
            (@ (id . "col3"))
            (h3 "Recent activity")
            (p
-            ,(repo->recent-summary (static-local-path cfg "repo.scm") cfg)
-            )))))))))
+            ,(repo->recent-summary (static-local-path cfg "repo.scm") cfg)))))
+       '(script (@ (src . "/s/relativetime.js"))))))))
