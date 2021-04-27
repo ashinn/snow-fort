@@ -57,7 +57,7 @@
  ;; Packages
  (package
   ;; Structure as described in the "
-	     (a (@ (href "../spec/")) package specification)
+	     (a (@ (href "../spec/")) "package specification")
 	     ".
   ...))")))
           (div
