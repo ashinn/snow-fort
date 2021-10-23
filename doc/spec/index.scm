@@ -57,7 +57,7 @@
   ;;  * artistic
   ;;  * apache
   ;;  * public-domain
-  (license 'bsd)
+  (license bsd)
   ;; Current version string.
   (version \"1.2.3\")
   ;; Program containing tests to run before installing this package.
