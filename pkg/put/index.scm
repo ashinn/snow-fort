@@ -28,6 +28,19 @@
      (pad2 (time-minute tm)) ":"
      (pad2 (time-second tm)) "+00:00")))
 
+;; package layout:
+;;    host/user/module/name/version/index.html
+;;    host/user/module/name/version/pkg/module-name-version.tgz
+;;    host/user/module/name/version/files/module-name.sld
+;;    host/user/module/name/version/files/...
+;; index includes file list and downloads
+;; distributed docs point to files/
+
+;; need to change:
+;;   - move snowball under pkg/
+;;   - unpack into files/
+;;   - generate index.html
+
 (define (handle-upload cfg request up)
   (guard (exn
           (else
@@ -58,7 +71,7 @@
       (cond
        ((invalid-package-reason pkg)
         => fail)
-       ((not (pair? sig-spec))
+       ((not (and (pair? sig-spec) email))
         (fail "a sig with at least email is required"))
        ((and (not password-given?) (not signed?))
         (fail "neither password nor signature given for upload"))
@@ -109,13 +122,27 @@
                           (if (and orig-created cell)
                               (set-car! (cdr cell) (cadr orig-created))))
                         pkg2))
-            (guard (exn (else (log-error "failed to save docs: " exn)))
+            ;; index.html: pkg summary, pointer to downloads, docs and files
+            (guard (exn (else (log-error "failed to extract files: " exn)))
+              (let ((latest-dir (make-path dir "files/latest")))
+                (when (file-exists? latest-dir)
+                  ;; TODO: consider preserving in files/<version>/...
+                  ;; (not essential and space on the server costs money)
+                  (delete-file-hierarchy latest-dir))
+                (tar-extract snowball
+                             (lambda (path)
+                               (make-path latest-dir
+                                          (path-strip-leading-parents
+                                           (path-normalize path)))))))
+            '(guard (exn (else (log-error "failed to save docs: " exn)))
               (cond
                ;; TODO: support multiple doc files
                ((cond ((assq 'manual (cdr pkg))
                        => (lambda (ls)
                             (and (pair? ls)
                                  (pair? (cdr ls))
+                                 (not (string-prefix? "http:" (cadr ls)))
+                                 (not (string-prefix? "https:" (cadr ls)))
                                  (let ((file (make-path (tar-top snowball)
                                                         (cadr ls))))
                                    (tar-extract-file snowball file)))))
@@ -124,7 +151,7 @@
                      (let ((out (open-binary-output-file
                                  (static-local-path
                                   cfg
-                                  (make-path dir "index.html")))))
+                                  (make-path dir "doc.html")))))
                        (write-bytevector bv out)
                        (close-output-port out))))))
             `(span "Thanks for uploading! "
