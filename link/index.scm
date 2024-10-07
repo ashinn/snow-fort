@@ -15,12 +15,14 @@
           (@ (id . "main"))
           (div
            (@ (id . "col1"))
+           (h3 "Implementations")
+           (ul (li (a (@ (href . "https://get.scheme.org/")) "get.scheme.org")))
            (h3 "R7RS")
            (ul
             (li (a (@ (href . "https://small.r7rs.org/attachment/r7rs.pdf")) "Final draft"))
             (li (a (@ (href . "http://scheme-reports.org/")) "Scheme Reports")))
-           (h3 "Implementations")
-           (ul (li (a (@ (href . "https://get.scheme.org/")) "get.scheme.org"))))
+           (h3 "SRFI")
+           (ul (li (a (@ (href . "https://srfi.schemers.org")) "srfi.schemers.org"))))
           (div
            (@ (id . "col2"))
            (h3 "Community")
