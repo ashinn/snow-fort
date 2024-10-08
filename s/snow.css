@@ -1,16 +1,16 @@
-body { 
-  margin: auto; 
-  padding: 0;
-  margin-bottom: 3em;
+html, body {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+body {
   font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
   /* font-size: calc((.05em + 1vmin) + (.05em + 1vmax)); */
-  font-size: large;
-  max-width: 70em;
 }
 #head {overflow: hidden}
 #head_pic {
   float: left;
-  font-size: 2em;
+  font-size: 2.5em;
+  margin: 8px 8px 8px 8px;
 }
 #head_name {
   float: right;
@@ -21,25 +21,25 @@ body {
 }
 #toolbar {
   color: white;
-  background: blue;
-  background: -moz-linear-gradient(top, blue, #003366);
-  background: -webkit-gradient(linear, left top, left bottom, from(blue), to(#003366));
+  background: #0B2E59;
   overflow: hidden;
 }
-#menu {float: left}
+#menu {float: left;}
 #menu a {
-  text-shadow: 0px 5px 9px #00a;
-  padding: 10px;
+  margin-top: 14px;
+  margin-right: 12px;
+  margin-left: 12px;
   display: inline-block;
-  vertical-align: middle;
 }
 #menu a:link {color: white; text-decoration: none}
 #menu a:visited {color: white; text-decoration: none}
 #menu a:hover {color: white; text-decoration: underline}
 #search {
   float: right;
-  padding-top: 10px;
-  padding-right: 10px;
+  padding-top: 12px;
+}
+#search form input {
+    margin-right: 8px;
 }
 #quote {
   font-size: 0.8em;
@@ -107,8 +107,10 @@ body {
 }
 }
 td,th {
+  padding-left: 8px;
   padding-right: 2em;
-  padding-bottom: 0.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
   white-space: nowrap;
 }
 table.sortable th::after {
