@@ -42,9 +42,15 @@
                                     (extract-email (car x))
                                     (extract-email x))))
                           (else #f))
-                         email)))
+                         email))
+         (pkg-page-url (string-append "pkg-page?pkg="
+                                      (write-to-string (package-name pkg))
+                                      "&author="
+                                      auth
+                                      "&maintainer="
+                                      maint)))
     `(tr
-      (td (a (@ (href . ,(assoc-get pkg 'url)))
+      (td (a (@ (href . ,pkg-page-url))
              ,(write-to-string (package-name pkg))))
       (td (small ,(package-version pkg)))
       (td (small
@@ -53,7 +59,7 @@
               => (lambda (s) (substring s 0 10)))
              (else ""))))
       (td (@ (class . "detail")) ,desc)
-      (td (@ (class . "detail"))
+      #;(td (@ (class . "detail"))
           ,@(append-map
              (lambda (auth email)
                `((a (@ ,@(if email
@@ -82,7 +88,7 @@
         `(table
           (@ (class . "sortable"))
           (tr (th "Package") (th "Version") (th "Updated")
-              (th "Description") (th "Authors") (th "Docs"))
+              (th "Description") #;(th "Authors") (th "Docs"))
           ,@(filter-map
              (lambda (pkg)
                (guard
