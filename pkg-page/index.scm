@@ -54,7 +54,20 @@
                                   (cadr item)))))
              (string-copy list-str (- (string-length list-str) 1))))
           ((string? (cadr item)) (remove-email (cadr item)))
+          ((symbol? (cadr item)) (symbol->string (cadr item)))
+          ((equal? field 'size)
+           (string-append (number->string (cadr item)) " bytes"))
           (else ""))))
+
+(define (pkg-signature->string pkg)
+  (if (assq 'signature pkg)
+    (let* ((signature (cdr (assq 'signature pkg)))
+           (digest-type (cadr (assq 'digest signature)))
+           (digest (assq digest-type signature)))
+      (if digest
+        (cadr digest)
+        ""))
+    ""))
 
 (define (pkg->left-table cfg pkg name)
   (let* ((url-type (if (assq 'git pkg) 'git 'http))
@@ -118,8 +131,13 @@
                                 (char=? (string-ref url 0) #\/))
                          (path-strip-directory url)
                          url)
-                      ))
-              '())))))
+                      )
+                   ,(string-append " (" (pkg-field->string pkg 'size) ")"))
+              '()))
+       (tr (th "License")
+           (th ,(pkg-field->string pkg 'license)))
+       (tr (th "Signature")
+           (th (textarea ,(pkg-signature->string pkg)))))))
 
 (servlet-run
   (lambda (cfg request next restart)
