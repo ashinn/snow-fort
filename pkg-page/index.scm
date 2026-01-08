@@ -1,8 +1,8 @@
-
 (import (scheme base)
         (scheme read)
         (scheme write)
         (scheme file)
+        (scheme char)
         (srfi 1)
         (srfi 2)
         (srfi 95)
@@ -15,128 +15,111 @@
         (chibi regexp)
         (chibi io)
         (chibi snow fort)
-        (chibi snow package))
-
-(define (any->string any)
-  (parameterize
-     ((current-output-port (open-output-string)))
-     (display any)
-     (get-output-string (current-output-port))))
+        (chibi snow package)
+        (chibi crypto md5))
 
 (define (write-to-string x)
   (let ((out (open-output-string)))
     (write x out)
     (get-output-string out)))
 
-(define (extract-email str)
-  (and-let* ((re '(: (* any) "<" ($ (* (~ (">")))) ">" (* any)))
-             (match (regexp-matches re str)))
-    (string-trim (regexp-match-submatch match 1))))
+(define (package-hash pkg)
+  (md5
+    (list->string
+      (filter
+        (lambda (item) item)
+        (map
+          (lambda (c)
+            (if (or (char-alphabetic? c) (char-numeric? c)) c #f))
+          (string->list
+            (string-append
+              (write-to-string (package-name pkg))
+              (write-to-string (or (assq 'authors pkg) ""))
+              (write-to-string (or (assq 'maintainers pkg) "")))))))))
 
-(define (in-snow-fort? repo pkg lib-name)
-  (not (null? (filter (lambda (pkg)
-                        (and (package? pkg)
-                             (equal? (package-name pkg) lib-name)))
-                      (cdr repo)))))
+;; TODO Make smarter :)
+(define (remove-email str)
+  (car (string-split str #\<)))
+(define memoized-read
+  (memoize-file-loader (lambda (file) (call-with-input-file file read))))
 
-(define (to-link-if-exists repo pkg lib-name)
-  (if (and (not (equal? (car lib-name) 'scheme))
-           (not (equal? (car lib-name) 'srfi))
-           (not (equal? (package-name pkg) lib-name))
-           (in-snow-fort? repo pkg lib-name))
-    `(a (@ (href . ,(string-append "/pkg-page?pkg="
-                                   (write-to-string lib-name))))
-        ,(write-to-string lib-name))
-    (write-to-string lib-name)))
+(define (pkg-field->string pkg field)
+  (let ((item (assq field pkg)))
+    (cond ((not item) "")
+          ((list? (cadr item))
+           (let ((list-str (apply
+                             string-append
+                             (map (lambda (item)
+                                    (string-append (remove-email item) ", "))
+                                  (cadr item)))))
+             (string-copy list-str (- (string-length list-str) 1))))
+          ((string? (cadr item)) (remove-email (cadr item)))
+          (else ""))))
 
-(define (package-libraries-list repo pkg)
-  (letrec*
-    ((lib->list
-       (lambda (lib)
-         `(li ,(write-to-string (car lib))
-              (ul ,(map
-                     (lambda (dep)
-                       (cond ((equal? (car dep) 'depends)
-                              (lib->list dep))
-                             (else
-                               `(li ,(to-link-if-exists repo pkg dep)))))
-                     (cdr lib)))))))
-    `(ul
-       ,@(map
-           (lambda (lib)
-             `(li ,(write-to-string (car (cdr (assoc 'name (cdr lib)))))
-                  (ul ,@(map (lambda (item)
-                               (cond ((equal? (car item) 'depends)
-                                      (lib->list item))
-                                     ((equal? (car item) 'cond-expand)
-                                      `(li "cond-expand"
-                                           (ul ,(map lib->list (cdr item)))))
-                                     (else `(ul))))
-                             (cdr lib)))))
-           (package-libraries pkg)))))
-
-(define repo->pkg-info
-  (memoize-file-loader
-    (lambda (repo-path cfg pkg-name-string pkg-author pkg-maintainer)
-      (let* ((repo (call-with-input-file repo-path read))
-             (pkg-name (read (open-input-string pkg-name-string)))
-             (pkg (car (filter (lambda (pkg)
-                                 (and (package? pkg)
-                                      (equal? (package-name pkg) pkg-name)
-                                      (or (not (equal? (car pkg-name) 'srfi))
-                                          (equal? (package-maintainer repo pkg) pkg-maintainer))))
-                               (cdr repo))))
-             (email (package-email pkg))
-             (description (or (assoc-get pkg 'description) ""))
-             (dir (package-dir email pkg))
-             (docs (assoc-get pkg 'manual))
-             (doc (if (pair? docs) (car docs) docs))
-             (doc-url (cond
-                        ((not (string? doc)) #f)
-                        ((or (string-prefix? doc "http:")
-                             (string-prefix? doc "https:"))
-                         doc)
-                        (else
-                          (make-path (static-url cfg dir) "index.html"))))
-             (download-url (assoc-get pkg 'url))
-             (author (package-author repo pkg))
-             (maintainer (package-maintainer repo pkg))
-             (auth-email (if (and maintainer (not (equal? author maintainer)))
-                           (cond
-                             ((assoc-get (cdr pkg) 'authors)
-                              => (lambda (x)
-                                   (if (pair? x)
-                                     (extract-email (car x))
-                                     (extract-email x))))
-                             (else #f))
-                           email))
-             (version (package-version pkg)))
-        `(div
-           (div
-             (div
-               (@ (id . "main"))
-               (div (@ (id . "col1"))
-                    (h2 ,pkg-name-string)
-                    (table
-                      (@ (style . "text-align: left"))
-                      (tr (th "Author") (th ,(if author author "")))
-                      (tr (th "Maintainer") (th ,(if maintainer maintainer "")))
-                      (tr (th "Version")
-                          (th (a (@ (href . ,download-url)) ,version)))
-                      (tr (th "Documentation")
-                          ,(if doc-url
-                             `(th (a (@ (href . ,doc-url))
-                                     ,(path-strip-directory doc-url)))
-                             ""))))
-               (div
-                 (@ (id . "col2"))
-                 (div
-                   (@ (style . "min-height: 30vh;"))
-                   ,description))
-               (div
-                 (@ (id . "col3"))
-                 (h3 "Libraries and their immediate dependencies")
-                 ,(package-libraries-list repo pkg)))))))))
+(define (pkg->left-table cfg pkg name)
+  (let* ((url-type (if (assq 'git pkg) 'git 'http))
+         (url (if (equal? url-type 'git)
+                (cadr (assq 'url (cdr (assq 'git pkg))))
+                (cadr (assq 'url pkg))))
+         (doc (pkg-field->string pkg 'manual))
+         (doc-url
+           (cond ((string=? doc "") "")
+                 ((or (string-prefix? doc "http:")
+                      (string-prefix? doc "https:"))
+                  doc)
+                 ((equal? url-type 'http)
+                  (let* ((email (package-email pkg))
+                         (dir (package-dir email pkg)))
+                    (make-path (static-url cfg dir) "index.html")))
+                 ((equal? url-type 'git) url)
+                 (else "")))
+         (doc-url-text
+           (cond ((equal? url-type 'http)
+                  (path-strip-directory doc-url))
+                 ((equal? url-type 'git)
+                  doc)
+                 (else doc-url)))
+         (download-url
+           (if (assq 'git pkg)
+             (assoc-get 'url (assoc-get 'git pkg))
+             (assoc-get 'url pkg)))
+         (updated (let ((updated-str (pkg-field->string pkg 'updated)))
+                    (if (and (>= (string-length updated-str) 10))
+                      (substring updated-str 0 10)
+                      ""))))
+    `(table
+       (@ (style . "text-align: left"))
+       (tr (th "Authors")
+           (th ,(pkg-field->string pkg 'authors)))
+       (tr (th "Maintainers")
+           (th ,(pkg-field->string pkg 'maintainers)))
+       (tr (th "Latest version")
+           (th ,(pkg-field->string pkg 'version)))
+       (tr (th "Documentation")
+           (th
+             ,(if (equal? url-type 'http)
+                `(a (@ (href . ,doc-url))
+                    ,(if (and (string? url)
+                              (> (string-length url) 0)
+                              (char=? (string-ref url 0) #\/))
+                       (path-strip-directory doc-url)
+                       doc-url))
+                (string-append doc-url-text " in repository"))))
+       (tr (th "Repository")
+           ,(if (equal? url-type 'git)
+              `(th (a (@ (href . ,url))
+                      ,(path-strip-directory url)))
+              '()))
+       (tr (th "Package file")
+           ,(if (equal? url-type 'http)
+              `(th (a (@ (href . ,url))
+                      ,(if (and (string? url)
+                                (> (string-length url) 0)
+                                (char=? (string-ref url 0) #\/))
+                         (path-strip-directory url)
+                         url)
+                      ))
+              '())))))
 
 (servlet-run
   (lambda (cfg request next restart)
@@ -145,8 +128,53 @@
       request
       (lambda (content)
         (page
-          (repo->pkg-info (static-local-path cfg "repo.scm")
-                          cfg
-                          (request-param request "pkg")
-                          (request-param request "author")
-                          (request-param request "maintainer")))))))
+          (let* ((pkg-hash-arg (or (request-param request "pkg" "nosuchfile")))
+                 (pkg-file (string-append
+                             (static-local-path cfg "pkg-data")
+                             "/"
+                             pkg-hash-arg
+                             ".scm")))
+            (if (not (file-exists? pkg-file))
+              `(div
+                 (div
+                   (div
+                     (@ (id . "main"))
+                     (div (@ (id . "col1")))
+                     (div
+                       (@ (id . "col2"))
+                       (div
+                         (@ (style . "min-height: 30vh;"))
+                         "Package not found"))
+                     (div
+                       (@ (id . "col3"))))))
+              (let* ((pkg (memoized-read pkg-file))
+                     (name (write-to-string
+                             (let ((pkg-name (assq 'name pkg)))
+                               (if pkg-name
+                                 (cdr pkg-name)
+                                 (cadr (assq 'name (cdr (assq 'library pkg))))))))
+                     (pkg-hash (package-hash pkg))
+                     (dependencies-path
+                       (static-local-path cfg
+                                          (string-append "pkg-data/"
+                                                         pkg-hash
+                                                         "-dependencies.scm")))
+                     (dependencies (if (file-exists? dependencies-path)
+                                     (memoized-read dependencies-path)
+                                     '())))
+                `(div
+                   (div
+                     (div
+                       (@ (id . "main"))
+                       (div (@ (id . "col1"))
+                            (h2 ,name)
+                            ,(pkg->left-table cfg pkg name))
+                       (div
+                         (@ (id . "col2"))
+                         (div
+                           (@ (style . "min-height: 30vh;"))
+                           ,(pkg-field->string pkg 'description)))
+                       (div
+                         (@ (id . "col3"))
+                         (h3 "Libraries and dependencies")
+                         ,dependencies))))))))))))

@@ -23,6 +23,7 @@ body {
   color: white;
   background: #0B2E59;
   overflow: hidden;
+  min-height: 42px;
 }
 #menu {float: left;}
 #menu a {

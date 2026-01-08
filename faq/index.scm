@@ -1,6 +1,7 @@
-
-(import (scheme base) (scheme write)
-        (chibi log) (chibi net servlet)
+(import (scheme base)
+        (scheme write)
+        (chibi log)
+        (chibi net servlet)
         (chibi snow fort))
 
 (servlet-run
@@ -40,4 +41,14 @@
                " which can automatically search and install R7RS libraries "
                "for itself and other implementations.")
           (div
-           (@ (id . "col3"))))))))))
+           (@ (id . "col3"))
+           (b "Q: ") (i "I found a bug on snow-fort/snow-chibi, where can I report it?")
+           (br)
+           (b "A: ")
+           "For snow-fort in "
+           (a (@ (href . "https://github.com/ashinn/snow-fort"))
+              "https://github.com/ashinn/snow-fort")
+           (br)
+           "For snow-chibi in "
+           (a (@ (href . "https://github.com/ashinn/chibi-scheme"))
+              "https://github.com/ashinn/chibi-scheme")))))))))

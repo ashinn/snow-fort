@@ -1,2 +1,5 @@
 *.swp
 s/repo.scm
+s/package-list.scm
+s/recent-list.scm
+s/pkg-data

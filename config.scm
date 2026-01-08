@@ -4,6 +4,7 @@
 ;;     /pkg/repo - download the repository
 ;;     /pkg/put - upload a package
 ;;     /pkg/reg - register a key
+;;   /pkg-page - package information page
 ;;   /doc - documentation
 ;;     /doc/install - how to install packages
 ;;     /doc/author - how to create and publish packages
@@ -21,8 +22,8 @@
 ;;     /s/<domain>/<local>/<modname>/<version>/index.html
 
 ((path
-  ((or (: "/s/" (* any))
-       "/robots.txt")
-   (file))
-  ((: "/" (* (~ ".")) (? ".scm"))
-   (scheme))))
+   ((or (: "/s/" (* any))
+        "/robots.txt")
+    (file))
+   ((: "/" (* (~ ".")) (? ".scm"))
+    (scheme))))
