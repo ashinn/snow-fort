@@ -16,12 +16,13 @@
           (div
            (@ (id . "col1"))   ;; nav
            (p
+            (a (@ (href . "/doc")) "Getting started") (br)
             (a (@ (href . "/doc/install")) "Installing") (br)
             (a (@ (href . "/doc/author")) "Publishing") (br)
             (a (@ (href . "/doc/usage")) "Command Summary") (br)
             (a (@ (href . "/doc/spec")) "Specification") (br)
-	    (a (@ (href . "/doc/repo")) "Repositories") (br))
-           )
+            (a (@ (href . "/doc/repo")) "Repositories") (br)
+            (a (@ (href . "/doc/implementations")) "Supported implementations") (br)))
           (div
            (@ (id . "col2_3"))   ;; main
            (p
@@ -30,16 +31,14 @@
             "You can browse the available libraries online in the "
             (a (@ (href . "/pkg/")) "packages list") ", and download and "
             " install them manually, or you can use existing tools to "
-            "automate the install process.  One such tool is Seth Alves "
-            (a (@ (href . "https://github.com/sethalves/snow2-client"))
-               "snow2-client")
-            ", which supports multiple implementations. Another tool "
-            "is the " (code "snow-chibi") " command, distributed with "
+            "automate the install process.  One such tool is "
+            (code "snow-chibi") " command, distributed with "
             (a (@ (href . "http://synthcode.com/wiki/chibi-scheme"))
                "chibi-scheme")
             " as of version 0.7.3, which "
-            "also supports multiple implementations. This document "
-            "describes " (code "snow-chibi") ".")
+            "also supports "
+            (a (@ (href . "/doc/implementations")) "multiple implementations")
+            ". This document " "describes " (code "snow-chibi") ".")
            (p
             "From either client you can access multiple repositories. "
             "Library authors can choose to host libraries on their own "

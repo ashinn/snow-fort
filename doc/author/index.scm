@@ -16,12 +16,13 @@
           (div
            (@ (id . "col1"))   ;; nav
            (p
+            (a (@ (href . "/doc")) "Getting started") (br)
             (a (@ (href . "/doc/install")) "Installing") (br)
             (a (@ (href . "/doc/author")) "Publishing") (br)
             (a (@ (href . "/doc/usage")) "Command Summary") (br)
             (a (@ (href . "/doc/spec")) "Specification") (br)
-	    (a (@ (href . "/doc/repo")) "Repositories") (br))
-           )
+            (a (@ (href . "/doc/repo")) "Repositories") (br)
+            (a (@ (href . "/doc/implementations")) "Supported implementations") (br)))
           (div
            (@ (id . "col2_3"))   ;; main
            (h3 "Packaging")
@@ -71,11 +72,11 @@
             "file in the snowball and provide a link to it, however for "
             "ease of browsing from the public repo html is preferred.  If "
             "you want to embed the docs in the code in a literate-programming "
-            "fashion, you can also use the --doc-from-scribble option, which "
-            "treats any line beginning with " (code "\";;>\"") " as docs in "
-            "scribble syntax, using backslash instead of @ as the escape "
-            "character.  In this case we can infer the description from the "
-            "first sentence of documentation.")
+            "fashion, you can also use the " (command "--doc-from-scribble")
+            " option, which treats any line beginning with " (code "\";;>\"")
+            " as docs in scribble syntax, using backslash instead of @ as the"
+            " escape character. In this case we can infer the description from
+            the first sentence of documentation.")
            (p
             "Finally, a well maintained library should provide tests. "
             "You can include these with the " (command "--test=<prog.scm>")
@@ -88,8 +89,7 @@
             "a test program.  You can also specify "
             (code "(append-to-last -test)") " as the " (command "test-library")
             ", which would look for a library based on the packaged library "
-            "with the given suffix, in this case "
-            (code "(feeley earley-test)")
+            "with the given suffix, in this case " (code "(feeley earley-test)")
             ".  This is especially handy when packaging multiple libraries "
             "together.")
            (p
@@ -124,6 +124,11 @@
             "then the command becomes simply:")
            (blockquote
             (pre (code "snow-chibi package --authors=\"Marc Feeley\" earley.sld")))
+           (p
+            "To install a snowball use the " (code "install") " command: ")
+           (blockquote
+            (code
+             "snow-chibi install feeley-earley-1.0.tgz"))
            (h3 "Publishing")
            (p
             "Once we have a package the next step is to share it.  First "
